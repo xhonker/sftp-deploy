@@ -1,0 +1,41 @@
+{
+  "name": "sftp-deploy",
+  "version": "0.0.1",
+  "description": "ftp sftp deploy",
+  "main": "index.js",
+  "author": "xhonker",
+  "license": "MIT",
+  "scripts": {
+    "start": "rollup -c ./config/rollup.config.dev.js --watch",
+    "build": "rollup -c ./config/rollup.config.prod.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "async": "^3.2.0",
+    "dotenv": "^8.2.0",
+    "fs-extra": "^9.0.1",
+    "ftp": "^0.3.10",
+    "ssh2": "^0.8.9"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/async": "^3.2.3",
+    "@types/dotenv": "^8.2.0",
+    "@types/fs-extra": "^9.0.1",
+    "@types/ftp": "^0.3.31",
+    "@types/node": "^14.0.24",
+    "@types/ora": "^3.2.0",
+    "@types/progress": "^2.0.3",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-latest": "^6.24.1",
+    "chalk": "^4.1.0",
+    "ora": "^4.0.5",
+    "progress": "^2.0.3",
+    "rollup": "^2.22.2",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "rollup-plugin-uglify": "^6.0.4"
+  }
+}
