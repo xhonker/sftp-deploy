@@ -3,13 +3,23 @@
   "version": "0.0.1",
   "description": "ftp sftp deploy",
   "main": "index.js",
-  "author": "xhonker",
+  "author": {
+    "email": "wu_xhonker@hotmail.com",
+    "name": "xhonker",
+    "url": "https://github.com/xhonker"
+  },
   "license": "MIT",
   "scripts": {
     "start": "rollup -c ./config/rollup.config.dev.js --watch",
     "build": "rollup -c ./config/rollup.config.prod.js",
     "test": "jest"
   },
+  "keywords": [
+    "ftp",
+    "sftp",
+    "deploy",
+    "typescript"
+  ],
   "dependencies": {
     "async": "^3.2.0",
     "dotenv": "^8.2.0",
