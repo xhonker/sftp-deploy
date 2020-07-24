@@ -5,6 +5,7 @@ import chalk from "chalk";
 import progress from "progress";
 import { sizeConversion } from "@/utils";
 import { FtpOptions, SFtpOptions } from "@/interface";
+import { log } from "@/utils";
 
 interface IObject {
   [key: string]: boolean
@@ -28,12 +29,12 @@ export abstract class BaseClient extends EventEmitter {
       this.connected = connected;
       this.handlerDir(this.options.sourcePath)
       if (this.files.length && this.connected) {
-        console.log(chalk.blueBright(`FILE COUNT: ${this.files.length} TOTAL SIZE:${sizeConversion(this.totalSize)}`));
+        log.info(`FILE COUNT: ${this.files.length} TOTAL SIZE:${sizeConversion(this.totalSize)}`)
         this.progress(this.files.length)
         await this.uploadFiles(this.files);
       }
     } catch (_) {
-      console.log(chalk.redBright('[ftp connect err] :', _))
+      log.error(`start error => ${_}`)
     }
   }
   async handlerDir(sourcePath: string) {
