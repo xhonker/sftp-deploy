@@ -1,8 +1,9 @@
 
 import path from "path";
-import { BaseClient } from "./base-client";
-import { SFtpOptions } from "@/interface";
 import SSH from "node-ssh";
+import { BaseClient } from "./base-client";
+import { log } from "@/utils";
+import { SFtpOptions } from "@/interface";
 
 export class SftpClient extends BaseClient {
   public ssh: SSH;
@@ -13,6 +14,7 @@ export class SftpClient extends BaseClient {
   }
   async uploadFiles(): Promise<void> {
     const { remotePath, sourcePath } = this.options;
+    let failed: string[] = [];
     try {
       await this.ssh.putDirectory(sourcePath, remotePath, {
         recursive: true,
@@ -21,14 +23,14 @@ export class SftpClient extends BaseClient {
           return true
         },
         tick: (localPath, remotePath, err) => {
-          if (!err) {
-            this.emit("progress", path.basename(localPath))
-          } else {
-            // chalk red
-            console.log(localPath)
-          }
+          if (err) return failed.push(localPath);
+          this.emit("progress", path.basename(localPath))
         }
-      }).catch(e => console.log(e))
+      }).then(() => {
+        if (failed.length) {
+          log.error(`failed transfers ${failed.join(", ")}`)
+        }
+      })
 
     } catch (_) {
       console.log("Quicker: SftpClient -> _", _)

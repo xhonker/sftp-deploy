@@ -1,3 +1,4 @@
+import chalk from "chalk";
 export const sizeConversion = (size: number): string => {
   let b = 1 * 1024;
   let kb = b * 1024;
@@ -22,4 +23,19 @@ export const sizeConversion = (size: number): string => {
   }
 
   return result;
+}
+
+export const log = {
+  error(text: string) {
+    return console.log(chalk.redBright(text))
+  },
+  info(text: string) {
+    return console.log(chalk.blueBright(text))
+  },
+  success(text: string) {
+    return console.log(chalk.greenBright(text))
+  },
+  warning(text: string) {
+    return console.log(chalk.yellowBright(text))
+  }
 }

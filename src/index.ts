@@ -3,7 +3,7 @@ import { FtpClient } from "@/commo/ftp-client";
 import { SftpClient } from "@/commo/sftp-client";
 import { EntryOptions } from "./interface";
 
-const dotenv = require('dotenv').config({ path: path.resolve(process.cwd(), '.env.ftp') });
+const dotenv = require('dotenv').config({ path: path.resolve(process.cwd(), '.env.sftp') });
 let { USERNAME, PASSWORD, HOST, PORT, PROTOCOL, REMOTE_PATH } = dotenv.parsed;
 
 function main(options: EntryOptions) {
