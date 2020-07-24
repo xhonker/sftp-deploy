@@ -33,8 +33,7 @@ export class SftpClient extends BaseClient {
       })
 
     } catch (_) {
-      console.log("Quicker: SftpClient -> _", _)
-
+      log.error(`sftp upload err${_}`)
     }
   }
   connect(opts: SFtpOptions): Promise<boolean> {
