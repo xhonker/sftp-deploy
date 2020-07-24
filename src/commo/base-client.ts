@@ -34,7 +34,7 @@ export abstract class BaseClient extends EventEmitter {
         await this.uploadFiles(this.files);
       }
     } catch (_) {
-      log.error(`start error => ${_}`)
+      log.error(`[start] => ${_}`)
     }
   }
   async handlerDir(sourcePath: string) {

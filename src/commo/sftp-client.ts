@@ -28,12 +28,12 @@ export class SftpClient extends BaseClient {
         }
       }).then(() => {
         if (failed.length) {
-          log.error(`failed transfers ${failed.join(", ")}`)
+          log.error(`[sftp uploadFiles failed transfers] ${failed.join(", ")}`)
         }
       })
 
     } catch (_) {
-      log.error(`sftp upload err${_}`)
+      log.error(`[sftp upload]${_}`)
     }
   }
   connect(opts: SFtpOptions): Promise<boolean> {

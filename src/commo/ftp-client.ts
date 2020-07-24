@@ -54,12 +54,12 @@ export class FtpClient extends BaseClient {
       whilst(cb => cb(null, fileDirs && fileDirs.length), async (next) => {
         let d = fileDirs.pop()!;
         this.cacheDir[d] = true;
-        await this.mkdir(d).catch(_ => { log.error(`ftp mkdir error => localFilePath:${file} ${_}`) })
+        await this.mkdir(d).catch(_ => { log.error(`[ftp uploadFiles mkdir] => localFilePath:${file} ${_}`) })
         next()
       }, async (err: any) => {
         if (err) return log.error(`${err}`)
         let fileStream = fs.createReadStream(file);
-        await this.put(destPath, fileStream).catch(_ => { log.error(`ftp put error: localFIlePath:${file} ${_}`) })
+        await this.put(destPath, fileStream).catch(_ => { log.error(`[ftp uploadFile put]: localFIlePath:${file} ${_}`) })
         this.emit("progress", path.basename(file))
       })
     }
