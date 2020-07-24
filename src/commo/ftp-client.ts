@@ -5,6 +5,7 @@ import Client from "ftp";
 import { whilst } from "async";
 import { BaseClient } from "./base-client";
 import { FtpOptions } from "@/interface/index";
+import { log } from "@/utils";
 
 export class FtpClient extends BaseClient {
 
@@ -14,7 +15,7 @@ export class FtpClient extends BaseClient {
     this.client = new Client();
     this.start()
   }
-  async connect(opts: any): Promise<boolean> {
+  async connect(opts: FtpOptions): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.client.connect(opts)
       this.client.on("ready", (err) => {
@@ -53,12 +54,12 @@ export class FtpClient extends BaseClient {
       whilst(cb => cb(null, fileDirs && fileDirs.length), async (next) => {
         let d = fileDirs.pop()!;
         this.cacheDir[d] = true;
-        await this.mkdir(d).catch(e => { console.log('mkdir', e) })
+        await this.mkdir(d).catch(_ => { log.error(`ftp mkdir error => localFilePath:${file} ${_}`) })
         next()
       }, async (err: any) => {
-        if (err) return console.log(err);
+        if (err) return log.error(`${err}`)
         let fileStream = fs.createReadStream(file);
-        await this.put(destPath, fileStream).catch(e => { console.log('create', e) })
+        await this.put(destPath, fileStream).catch(_ => { log.error(`ftp put error: localFIlePath:${file} ${_}`) })
         this.emit("progress", path.basename(file))
       })
     }
