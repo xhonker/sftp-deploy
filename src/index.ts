@@ -1,6 +1,6 @@
 import path from "path";
-import { FtpClient } from "@/commo/ftp-client";
-import { SftpClient } from "@/commo/sftp-client";
+import { FtpClient } from "@/common/ftp-client";
+import { SftpClient } from "@/common/sftp-client";
 import { EntryOptions } from "./interface";
 
 const dotenv = require('dotenv').config({ path: path.resolve(process.cwd(), '.env.ftp') });
