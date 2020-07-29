@@ -52,7 +52,7 @@ export class FtpClient extends BaseClient {
       resolve()
     })
   }
-  async putDirectorys(dirs: string[], { tick }: any): Promise<void> {
+  async putDirectorys(dirs: string[]): Promise<void> {
     let queue = new Queue({ concurrency: 10 })
     return new Promise(async (resolve, reject) => {
       dirs.forEach(dir => {
@@ -60,16 +60,15 @@ export class FtpClient extends BaseClient {
         queue.add(async () => {
           try {
             await this.putDir(remotePath)
-            tick(null, remotePath)
           } catch (_) {
-            tick(_, remotePath)
+            reject(_)
           }
         }).catch(reject)
       })
       resolve(queue.waitTillIdle())
     })
   }
-  async putFiles(files: string[], tick?: any): Promise<void> {
+  async putFiles(files: string[], { tick }: any): Promise<void> {
     let queue = new Queue()
     return new Promise((resolve, reject) => {
       files.forEach(file => {

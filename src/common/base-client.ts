@@ -33,14 +33,14 @@ export abstract class BaseClient extends EventEmitter {
       if (files.length && this.connected) {
         log.info(`FILE COUNT: ${files.length} DIRECTORY COUNT: ${dirs.length} TOTAL SIZE:${sizeConversion(total)}`)
         this.progress(files.length)
-        await this.putDirectorys(dirs);
+        await this.putDirectorys(dirs.sort((a, b) => a.length - b.length)).catch(_ => log.error(_))
 
         this.putFiles(files, {
           tick: (err, fileName) => {
             if (err) return log.error(err);
             this.emit("progress", fileName)
           }
-        })
+        }).catch(_ => log.error(_))
       }
     } catch (_) {
       log.error(`[start] => ${_}`)
