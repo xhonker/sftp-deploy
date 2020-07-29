@@ -6,6 +6,12 @@ import { log } from "@/utils";
 import { SFtpOptions } from "@/interface";
 
 export class SftpClient extends BaseClient {
+  putFiles(files: string[]): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  putDirectorys(dirs: string[]): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   public ssh: SSH;
   constructor(options: SFtpOptions) {
     super(options)

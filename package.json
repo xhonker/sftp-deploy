@@ -21,7 +21,6 @@
     "typescript"
   ],
   "dependencies": {
-    "async": "^3.2.0",
     "dotenv": "^8.2.0",
     "fs-extra": "^9.0.1",
     "ftp": "^0.3.10",
@@ -32,7 +31,6 @@
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@types/async": "^3.2.3",
     "@types/dotenv": "^8.2.0",
     "@types/fs-extra": "^9.0.1",
     "@types/ftp": "^0.3.31",

@@ -1,16 +1,17 @@
 import path from "path";
-import fs from "fs-extra";
 import { EventEmitter } from 'events'
-import chalk from "chalk";
 import progress from "progress";
 import { sizeConversion } from "@/utils";
 import { FtpOptions, SFtpOptions } from "@/interface";
 import { log } from "@/utils";
-
+import { scanDir } from "@/scandir";
 interface IObject {
   [key: string]: boolean
 }
 type options = FtpOptions | SFtpOptions
+interface CallBackOptions {
+  tick?: (err: any, filename: string) => void
+}
 export abstract class BaseClient extends EventEmitter {
   public connected: boolean = false;
   public options: options;
@@ -21,30 +22,37 @@ export abstract class BaseClient extends EventEmitter {
     super()
     this.options = options;
   }
-  abstract uploadFiles(files: string[]): Promise<void>;
   abstract connect(opts: options): Promise<boolean>
+  abstract putDirectorys(dirs: string[], options?: CallBackOptions): Promise<void>
+  abstract putFiles(files: string[], options?: CallBackOptions): Promise<void>;
   async start() {
     try {
       let connected = await this.connect(this.options)
       this.connected = connected;
-      this.handlerDir(this.options.sourcePath)
-      if (this.files.length && this.connected) {
-        log.info(`FILE COUNT: ${this.files.length} TOTAL SIZE:${sizeConversion(this.totalSize)}`)
-        this.progress(this.files.length)
-        await this.uploadFiles(this.files);
+      let { total, dirs, files } = await scanDir(this.options.sourcePath);
+      if (files.length && this.connected) {
+        log.info(`FILE COUNT: ${files.length} DIRECTORY COUNT: ${dirs.length} TOTAL SIZE:${sizeConversion(total)}`)
+        this.progress(files.length)
+        await this.putDirectorys(dirs);
+
+        this.putFiles(files, {
+          tick: (err, fileName) => {
+            if (err) return log.error(err);
+            this.emit("progress", fileName)
+          }
+        })
       }
     } catch (_) {
       log.error(`[start] => ${_}`)
     }
   }
-  async handlerDir(sourcePath: string) {
-    let files = fs.readdirSync(sourcePath).map(file => `${sourcePath}/${file}`)
-    files.forEach(file => {
-      let fileStat = fs.statSync(file);
-      this.totalSize += fileStat.size;
-      if (fileStat.isFile()) return this.files.push(file)
-      this.handlerDir(file);
-    })
+  getFilePath(path: string): string[] {
+    let rootDir = path.replace(this.options.sourcePath, '');
+    let remoteDir = `${this.options.remotePath}${rootDir}`
+    return [
+      rootDir,
+      remoteDir
+    ]
   }
   progress(total: number) {
     let bar = new progress("uploading [:bar] :percent :current/:total :elapseds :file", {
@@ -56,7 +64,7 @@ export abstract class BaseClient extends EventEmitter {
         file: path.basename(name)
       })
       if (bar.complete) {
-        console.log(chalk.greenBright("deploy successed"))
+        log.success("deploy successed")
         process.exit(0)
       }
     })

@@ -820,11 +820,6 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@types/async@^3.2.3":
-  version "3.2.3"
-  resolved "https://registry.npm.taobao.org/@types/async/download/@types/async-3.2.3.tgz#c56f5e0fc02f8b37196f79239cc857e789b97bb4"
-  integrity sha1-xW9eD8AvizcZb3kjnMhX54m5e7Q=
-
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/@types/color-name/download/@types/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -931,11 +926,6 @@ asn1@~0.2.0:
   integrity sha1-jSR136tVO7M+d7VOWeiAu4ziMTY=
   dependencies:
     safer-buffer "~2.1.0"
-
-async@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.npm.taobao.org/async/download/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
-  integrity sha1-s6JoXF67ZB094C0WEALGD8n4VyA=
 
 at-least-node@^1.0.0:
   version "1.0.0"

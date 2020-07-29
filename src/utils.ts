@@ -39,3 +39,7 @@ export const log = {
     return console.log(chalk.yellowBright(text))
   }
 }
+
+export const assert = (value: boolean, message: string) => {
+  if (!value) log.error(message);
+}
