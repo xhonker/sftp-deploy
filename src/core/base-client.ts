@@ -4,7 +4,7 @@ import progress from "progress";
 import { sizeConversion } from "@/utils";
 import { FtpOptions, SFtpOptions } from "@/interface";
 import { log } from "@/utils";
-import { scanDir } from "@/scandir";
+import { scanDir } from "@/internal/scandir";
 import { Queue } from "@/internal/queue";
 interface IObject {
   [key: string]: boolean

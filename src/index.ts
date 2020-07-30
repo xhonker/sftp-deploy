@@ -1,7 +1,7 @@
 import os from 'os'
 import { assert } from "@/utils";
-import { FtpClient } from "@/common/ftp-client";
-import { SftpClient } from "@/common/sftp-client";
+import { FtpClient } from "@/core/ftp-client";
+import { SftpClient } from "@/core/sftp-client";
 import { EntryOptions } from "./interface";
 
 
