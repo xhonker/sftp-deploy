@@ -3,7 +3,7 @@ const deploy = require('../lib');
 
 const dotenv = require('dotenv').config({ path: path.resolve(process.cwd(), '.env.ftp') });
 let { USERNAME, PASSWORD, HOST, PORT, PROTOCOL, REMOTE_PATH } = dotenv.parsed;
-deploy({
+deploy.config({
   username: USERNAME,
   password: PASSWORD,
   host: HOST,

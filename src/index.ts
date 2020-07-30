@@ -5,10 +5,10 @@ import { SftpClient } from "@/common/sftp-client";
 import { EntryOptions } from "./interface";
 
 
-export default (options: EntryOptions) => {
+export const config = (options: EntryOptions) => {
   assert(typeof options === 'object', "entry options must be a object")
   options = Object.assign({
-    host: "",
+    host: "127.0.0.1",
     port: 0,
     username: "",
     password: "",

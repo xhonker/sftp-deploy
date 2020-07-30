@@ -11,7 +11,7 @@ yarn add sftp-deploy -D
 
 ```js
 const deploy = require('sftp-deploy');
-deploy({
+deploy.config({
   username: 'user',
   password: 'pwd',
   host: '127.0.0.1',
