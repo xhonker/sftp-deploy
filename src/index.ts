@@ -1,3 +1,4 @@
+import os from 'os'
 import { assert } from "@/utils";
 import { FtpClient } from "@/common/ftp-client";
 import { SftpClient } from "@/common/sftp-client";
@@ -12,7 +13,7 @@ export default (options: EntryOptions) => {
     username: "",
     password: "",
     protocol: 'ftp',
-    remotePath: "/tmp",
+    remotePath: os.tmpdir(),
     localPath: process.cwd()
   }, options)
   let { protocol, username, ...opts } = options;

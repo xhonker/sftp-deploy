@@ -31,5 +31,5 @@ deploy({
 | host       | string         | '127.0.0.1'   | remote host        |
 | port       | number         | 21            | remote port        |
 | protocol   | "ftp"\| "sftp" | "ftp"         | protocol           |
-| remotePath | string         | /tmp          | remote upload path |
+| remotePath | string         | os.tmpdir()   | remote upload path |
 | localPath  | string         | process.cwd() | local path         |
