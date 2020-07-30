@@ -5,6 +5,7 @@ import { sizeConversion } from "@/utils";
 import { FtpOptions, SFtpOptions } from "@/interface";
 import { log } from "@/utils";
 import { scanDir } from "@/scandir";
+import { Queue } from "@/internal/queue";
 interface IObject {
   [key: string]: boolean
 }
@@ -23,36 +24,66 @@ export abstract class BaseClient extends EventEmitter {
     this.options = options;
   }
   abstract connect(opts: options): Promise<boolean>
-  abstract putDirectorys(dirs: string[], options?: CallBackOptions): Promise<void>
-  abstract putFiles(files: string[], options?: CallBackOptions): Promise<void>;
+  abstract mkdir(path: string): Promise<string>;
+  abstract uploadFile(localPath: string, remotePath: string): Promise<string>
+  abstract destroy(): void;
   async start() {
     try {
       let connected = await this.connect(this.options)
       this.connected = connected;
-      let { total, dirs, files } = await scanDir(this.options.sourcePath);
-      if (files.length && this.connected) {
-        log.info(`FILE COUNT: ${files.length} DIRECTORY COUNT: ${dirs.length} TOTAL SIZE:${sizeConversion(total)}`)
-        this.progress(files.length)
-        await this.putDirectorys(dirs.sort((a, b) => a.length - b.length)).catch(_ => log.error(_))
-
-        this.putFiles(files, {
-          tick: (err, fileName) => {
-            if (err) return log.error(err);
-            this.emit("progress", fileName)
-          }
-        }).catch(_ => log.error(_))
-      }
+      this.upload();
     } catch (_) {
       log.error(`[start] => ${_}`)
     }
   }
-  getFilePath(path: string): string[] {
+  getRemotePath(path: string): string {
     let rootDir = path.replace(this.options.sourcePath, '');
     let remoteDir = `${this.options.remotePath}${rootDir}`
-    return [
-      rootDir,
-      remoteDir
-    ]
+    return remoteDir;
+  }
+  async upload() {
+    let { total, dirs, files } = await scanDir(this.options.sourcePath);
+    if (files.length && this.connected) {
+      log.info(`FILE COUNT: ${files.length} DIRECTORY COUNT: ${dirs.length} TOTAL SIZE:${sizeConversion(total)}`)
+      this.progress(files.length)
+      dirs.sort((a, b) => a.length - b.length)
+      await this.uploadDirectory(dirs).catch(_ => log.error(_))
+
+      await this.uploadFiles(files, {
+        tick: (err, fileName) => {
+          if (err) return log.error(err);
+          this.emit("progress", fileName)
+        }
+      }).catch(_ => log.error(`[uploadFiles] ${_}`))
+    }
+
+  }
+  uploadDirectory(dirs: string[]): Promise<void> {
+    const queue = new Queue({ concurrency: 20 });
+    return new Promise((resolve, reject) => {
+      dirs.forEach(dir => {
+        queue.add(async () => {
+          await this.mkdir(this.getRemotePath(dir)).catch(reject)
+        })
+      })
+      resolve(queue.waitTillIdle())
+    })
+
+  }
+  uploadFiles(files: string[], { tick }: CallBackOptions): Promise<void> {
+    const queue = new Queue({ concurrency: 20 });
+    return new Promise((resolve, reject) => {
+      files.forEach(file => {
+        queue.add(async () => {
+          await this.uploadFile(file, this.getRemotePath(file))
+          if (tick) tick(null, file)
+        }).catch((_) => {
+          if (tick) tick(_, file)
+          reject(_)
+        })
+      })
+      resolve(queue.waitTillIdle())
+    })
   }
   progress(total: number) {
     let bar = new progress("uploading [:bar] :percent :current/:total :elapseds :file", {

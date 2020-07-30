@@ -1,0 +1,9 @@
+node_modules
+src
+test
+example
+config
+_local
+tsconfig.json
+yarn.lock
+.env.*

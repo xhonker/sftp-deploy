@@ -1,30 +1,24 @@
-import path from "path";
+import { assert } from "@/utils";
 import { FtpClient } from "@/common/ftp-client";
 import { SftpClient } from "@/common/sftp-client";
 import { EntryOptions } from "./interface";
 
-const dotenv = require('dotenv').config({ path: path.resolve(process.cwd(), '.env.ftp') });
-let { USERNAME, PASSWORD, HOST, PORT, PROTOCOL, REMOTE_PATH } = dotenv.parsed;
 
-function main(options: EntryOptions) {
-  let { protocol, username, debug, ...opt } = options;
-
+export default (options: EntryOptions) => {
+  assert(typeof options === 'object', "entry options must be a object")
+  options = Object.assign({
+    host: "",
+    port: 0,
+    username: "",
+    password: "",
+    protocol: 'ftp',
+    remotePath: "/tmp",
+    localPath: process.cwd()
+  }, options)
+  let { protocol, username, ...opts } = options;
   if (protocol === 'ftp') {
-    new FtpClient({ ...opt, user: username })
+    new FtpClient({ ...opts, user: username })
   } else {
-    new SftpClient({
-      ...opt,
-      username
-    })
+    new SftpClient({ ...opts, username })
   }
 }
-
-main({
-  username: USERNAME,
-  password: PASSWORD,
-  host: HOST,
-  port: PORT,
-  protocol: PROTOCOL,
-  remotePath: REMOTE_PATH,
-  sourcePath: path.join(process.cwd(), "node_modules", '@babel')
-})
