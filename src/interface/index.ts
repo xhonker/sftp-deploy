@@ -7,10 +7,12 @@ export interface EntryOptions {
   remotePath: string;
   sourcePath: string;
   debug?: boolean;
+  passive?: boolean;
 }
 
 export interface FtpOptions extends BaseOptions {
   user: string;
+  passive?: boolean;
 }
 interface BaseOptions {
   host: string;

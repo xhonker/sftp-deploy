@@ -811,6 +811,11 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@chilkat/ck-node11-macosx@^9.50.83":
+  version "9.50.83"
+  resolved "https://registry.npmjs.org/@chilkat/ck-node11-macosx/-/ck-node11-macosx-9.50.83.tgz#c16338ebb6f64948cd929f95b4a1e3c96ae8e837"
+  integrity sha512-d/B5VSmvgBTzKeJLwyDjBPF9RnqXMkSzWtRpRYjBALXZrM0h1fjpTbnHjUinrhUwxkuK8zQsyE0qWLpyKikY5w==
+
 "@rollup/pluginutils@^3.0.8":
   version "3.1.0"
   resolved "https://registry.npm.taobao.org/@rollup/pluginutils/download/@rollup/pluginutils-3.1.0.tgz#706b4524ee6dc8b103b3c995533e5ad680c02b9b"

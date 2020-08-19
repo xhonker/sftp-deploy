@@ -19,6 +19,7 @@ deploy.config({
   protocol: 'ftp',
   remotePath: '/tmp',
   sourcePath: process.cwd(),
+  passive: false, // active mode
 });
 ```
 
@@ -26,10 +27,11 @@ deploy.config({
 
 | Key        | Type           | Default       | Description        |
 | ---------- | -------------- | ------------- | ------------------ |
-| username   | string         |               | username           |
-| password   | string         |               | pwd                |
+| username   | string         | -             | username           |
+| password   | string         | -             | pwd                |
 | host       | string         | 127.0.0.1     | remote host        |
 | port       | number         | 21            | remote port        |
 | protocol   | "ftp"\| "sftp" | ftp           | protocol           |
 | remotePath | string         | os.tmpdir()   | remote upload path |
 | sourcePath | string         | process.cwd() | source path        |
+| passive    | boolean        | true          | ftp passive mode   |
