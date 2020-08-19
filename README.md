@@ -18,7 +18,7 @@ deploy.config({
   port: 21,
   protocol: 'ftp',
   remotePath: '/tmp',
-  localPath: process.cwd(),
+  sourcePath: process.cwd(),
 });
 ```
 
