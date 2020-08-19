@@ -3,14 +3,14 @@
 ### Install
 
 ```shell
-npm i sftp-deploy -D
-yarn add sftp-deploy -D
+npm i @/xhonker/deploy -D
+yarn add @/xhonker/deploy -D
 ```
 
 ### Usage
 
 ```js
-const deploy = require('sftp-deploy');
+const deploy = require('@/xhonker/deploy');
 deploy.config({
   username: 'user',
   password: 'pwd',
