@@ -28,8 +28,8 @@ deploy.config({
 | ---------- | -------------- | ------------- | ------------------ |
 | username   | string         |               | username           |
 | password   | string         |               | pwd                |
-| host       | string         | '127.0.0.1'   | remote host        |
+| host       | string         | 127.0.0.1     | remote host        |
 | port       | number         | 21            | remote port        |
-| protocol   | "ftp"\| "sftp" | "ftp"         | protocol           |
+| protocol   | "ftp"\| "sftp" | ftp           | protocol           |
 | remotePath | string         | os.tmpdir()   | remote upload path |
 | sourcePath | string         | process.cwd() | source path        |
