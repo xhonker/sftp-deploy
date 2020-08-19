@@ -32,4 +32,4 @@ deploy.config({
 | port       | number         | 21            | remote port        |
 | protocol   | "ftp"\| "sftp" | "ftp"         | protocol           |
 | remotePath | string         | os.tmpdir()   | remote upload path |
-| localPath  | string         | process.cwd() | local path         |
+| sourcePath | string         | process.cwd() | source path        |

@@ -9,7 +9,7 @@ export const config = (options: EntryOptions) => {
   assert(typeof options === 'object', "entry options must be a object")
   options = Object.assign({
     host: "127.0.0.1",
-    port: 0,
+    port: 21,
     username: "",
     password: "",
     protocol: 'ftp',
