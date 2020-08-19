@@ -42,7 +42,8 @@ export class FtpClient extends BaseClient {
     return new Promise((result, reject) => {
       if (!this.passive) {
         let success = this.client.PutFile(localPath, remotePath);
-        if (!success) return reject(this.client.LastErrorText)
+        let rep = this.client.SendCommand(`SITE CHMOD 777 ${remotePath}`)
+        if (!success || !rep) return reject(this.client.LastErrorText)
         return result(remotePath)
       }
       let data = fs.readFileSync(localPath)
@@ -56,7 +57,8 @@ export class FtpClient extends BaseClient {
     return new Promise((resolve, reject) => {
       if (!this.passive) {
         let success = this.client.CreateRemoteDir(path);
-        if (!success) return reject(this.client.LastErrorText)
+        let rep = this.client.SendCommand(`SITE CHMOD 777 ${path}`);
+        if (!success || !rep) return reject(this.client.LastErrorText)
         return resolve(path)
       }
       this.client!.mkdir(path, true, (err: any) => {

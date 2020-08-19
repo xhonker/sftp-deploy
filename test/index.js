@@ -10,6 +10,6 @@ deploy.config({
   port: PORT,
   protocol: PROTOCOL,
   remotePath: REMOTE_PATH,
-  sourcePath: path.join(process.cwd(), 'node_modules', '@babel'),
+  sourcePath: path.join(process.cwd(), 'example'),
   passive: false,
 });
