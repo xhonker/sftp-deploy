@@ -1,6 +1,6 @@
 {
-  "name": "sftp-deploy",
-  "version": "0.0.1",
+  "name": "@xhonker/deploy",
+  "version": "0.0.2",
   "description": "ftp sftp deploy",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

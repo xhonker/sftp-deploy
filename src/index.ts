@@ -14,7 +14,7 @@ export const config = (options: EntryOptions) => {
     password: "",
     protocol: 'ftp',
     remotePath: os.tmpdir(),
-    localPath: process.cwd()
+    sourcePath: process.cwd()
   }, options)
   let { protocol, username, ...opts } = options;
   if (protocol === 'ftp') {
