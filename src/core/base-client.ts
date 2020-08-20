@@ -46,7 +46,7 @@ export abstract class BaseClient extends EventEmitter {
   async upload() {
 
     if (await isFile(this.options.sourcePath)) {
-      await this.uploadDirectory(parents(this.options.remotePath))
+      await this.uploadDirectory(parents(this.options.remotePath).sort((a, b) => a.length - b.length))
       await this.uploadFile(this.options.sourcePath, `${this.options.remotePath}/${path.basename(this.options.sourcePath)}`);
       log.success("deploy successed")
       return;
