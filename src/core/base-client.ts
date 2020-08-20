@@ -7,6 +7,7 @@ import { log } from "@/utils";
 import { scanDir } from "@/internal/scandir";
 import { Queue } from "@/internal/queue";
 import { isFile } from '@/internal/fs-promise'
+import parents from 'parents'
 interface IObject {
   [key: string]: boolean
 }
@@ -45,7 +46,7 @@ export abstract class BaseClient extends EventEmitter {
   async upload() {
 
     if (await isFile(this.options.sourcePath)) {
-      await this.mkdir(this.options.remotePath)
+      await this.uploadDirectory(parents(this.options.remotePath))
       await this.uploadFile(this.options.sourcePath, `${this.options.remotePath}/${path.basename(this.options.sourcePath)}`);
       log.success("deploy successed")
       return;
@@ -70,8 +71,9 @@ export abstract class BaseClient extends EventEmitter {
     const queue = new Queue({ concurrency: 20 });
     return new Promise((resolve, reject) => {
       dirs.forEach(dir => {
+        if (!dir) return;
         queue.add(async () => {
-          await this.mkdir(this.getRemotePath(dir)).catch(reject)
+          await this.mkdir(dir).catch(reject)
         })
       })
       resolve(queue.waitTillIdle())
