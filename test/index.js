@@ -10,6 +10,6 @@ deploy.config({
   port: PORT,
   protocol: PROTOCOL,
   remotePath: REMOTE_PATH,
-  sourcePath: path.join(process.cwd(), 'example'),
+  sourcePath: path.join(process.cwd(), 'example','index.html'),
   passive: false,
 });

@@ -6,6 +6,7 @@ import { FtpOptions, SFtpOptions } from "@/interface";
 import { log } from "@/utils";
 import { scanDir } from "@/internal/scandir";
 import { Queue } from "@/internal/queue";
+import { isFile } from '@/internal/fs-promise'
 interface IObject {
   [key: string]: boolean
 }
@@ -42,6 +43,13 @@ export abstract class BaseClient extends EventEmitter {
     return remoteDir;
   }
   async upload() {
+
+    if (await isFile(this.options.sourcePath)) {
+      await this.mkdir(this.options.remotePath)
+      await this.uploadFile(this.options.sourcePath, `${this.options.remotePath}/${path.basename(this.options.sourcePath)}`);
+      log.success("deploy successed")
+      return;
+    }
     let { total, dirs, files } = await scanDir(this.options.sourcePath);
     if (files.length && this.connected) {
       log.info(`FILE COUNT: ${files.length} DIRECTORY COUNT: ${dirs.length} TOTAL SIZE:${sizeConversion(total)}`)

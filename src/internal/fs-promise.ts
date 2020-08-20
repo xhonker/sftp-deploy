@@ -12,3 +12,10 @@ export const readdir = (path: string): Promise<string[]> => new Promise((resolve
     resolve(files || null)
   })
 })
+
+export const isFile = (path: string) => new Promise((resolve, reject) => {
+  fs.stat(path, (err, stats) => {
+    if (err) return reject(err);
+    resolve(stats.isFile() || null)
+  })
+})
