@@ -21,6 +21,7 @@ export abstract class BaseClient extends EventEmitter {
   public files: string[] = [];
   public totalSize: number = 0;
   public cacheDir: IObject = {};
+  public isSingleFile: boolean = false;
   constructor(options: options) {
     super()
     this.options = options;
@@ -39,6 +40,7 @@ export abstract class BaseClient extends EventEmitter {
     }
   }
   getRemotePath(path: string): string {
+    if (this.isSingleFile) return path
     let rootDir = path.replace(this.options.sourcePath, '');
     let remoteDir = `${this.options.remotePath}${rootDir}`
     return remoteDir;
@@ -46,9 +48,8 @@ export abstract class BaseClient extends EventEmitter {
   async upload() {
 
     if (await isFile(this.options.sourcePath)) {
-      await this.uploadDirectory(parents(this.options.remotePath).sort((a, b) => a.length - b.length))
-      await this.uploadFile(this.options.sourcePath, `${this.options.remotePath}/${path.basename(this.options.sourcePath)}`);
-      log.success("deploy successed")
+      this.isSingleFile = true;
+      this.handlerSingleFile();
       return;
     }
     let { total, dirs, files } = await scanDir(this.options.sourcePath);
@@ -67,13 +68,24 @@ export abstract class BaseClient extends EventEmitter {
     }
 
   }
+  async handlerSingleFile() {
+    let dirs = parents(this.options.remotePath).sort((a, b) => a.length - b.length);
+    let file = `${this.options.remotePath}/${path.basename(this.options.sourcePath)}`;
+    try {
+      await this.uploadDirectory(dirs);
+      await this.uploadFile(this.options.sourcePath, file);
+      log.success("deploy successed")
+    } catch (_) {
+      log.error(_)
+    }
+  }
   uploadDirectory(dirs: string[]): Promise<void> {
     const queue = new Queue({ concurrency: 20 });
     return new Promise((resolve, reject) => {
       dirs.forEach(dir => {
         if (!dir) return;
         queue.add(async () => {
-          await this.mkdir(dir).catch(reject)
+          await this.mkdir(this.getRemotePath(dir)).catch(reject)
         })
       })
       resolve(queue.waitTillIdle())
