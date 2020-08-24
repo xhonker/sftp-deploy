@@ -25,7 +25,6 @@
     "@chilkat/ck-node11-macosx": "^9.50.83",
     "dotenv": "^8.2.0",
     "fs-extra": "^9.0.1",
-    "ftp": "^0.3.10",
     "node-ssh": "^10.0.2",
     "parents": "^1.0.1"
   },
