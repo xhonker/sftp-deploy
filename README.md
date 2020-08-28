@@ -11,16 +11,19 @@ yarn add @/xhonker/deploy -D
 
 ```js
 const deploy = require('@/xhonker/deploy');
-deploy.config({
-  username: 'user',
-  password: 'pwd',
-  host: '127.0.0.1',
-  port: 21,
-  protocol: 'ftp',
-  remotePath: '/tmp',
-  sourcePath: process.cwd(),
-  passive: false, // active mode
-});
+deploy
+  .start({
+    username: 'user',
+    password: 'pwd',
+    host: '127.0.0.1',
+    port: 21,
+    protocol: 'ftp',
+    remotePath: '/tmp',
+    sourcePath: process.cwd(),
+    passive: false, // active mode
+  })
+  .then(() => console.log('complete'))
+  .cache((_) => console.error('fail'));
 ```
 
 ### EntryOptions

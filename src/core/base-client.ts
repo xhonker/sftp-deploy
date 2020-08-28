@@ -1,13 +1,13 @@
 import path from "path";
 import { EventEmitter } from 'events'
 import progress from "progress";
+import parents from 'parents'
 import { sizeConversion } from "@/utils";
 import { FtpOptions, SFtpOptions } from "@/interface";
 import { log } from "@/utils";
 import { scanDir } from "@/internal/scandir";
 import { Queue } from "@/internal/queue";
 import { isFile } from '@/internal/fs-promise'
-import parents from 'parents'
 interface IObject {
   [key: string]: boolean
 }
@@ -46,25 +46,28 @@ export abstract class BaseClient extends EventEmitter {
     return remoteDir;
   }
   async upload() {
-
-    if (await isFile(this.options.sourcePath)) {
-      this.isSingleFile = true;
-      this.handlerSingleFile();
-      return;
-    }
-    let { total, dirs, files } = await scanDir(this.options.sourcePath);
-    if (files.length && this.connected) {
-      log.info(`FILE COUNT: ${files.length} DIRECTORY COUNT: ${dirs.length} TOTAL SIZE:${sizeConversion(total)}`)
-      this.progress(files.length)
-      dirs.sort((a, b) => a.length - b.length)
-      await this.uploadDirectory(dirs).catch(_ => log.error(_))
-
-      await this.uploadFiles(files, {
-        tick: (err, fileName) => {
-          if (err) return log.error(err);
-          this.emit("progress", fileName)
-        }
-      }).catch(_ => log.error(`[uploadFiles] ${_}`))
+    try {
+      if (await isFile(this.options.sourcePath)) {
+        this.isSingleFile = true;
+        this.handlerSingleFile();
+        return;
+      }
+      let { total, dirs, files } = await scanDir(this.options.sourcePath);
+      if (files.length && this.connected) {
+        log.info(`FILE COUNT: ${files.length} DIRECTORY COUNT: ${dirs.length} TOTAL SIZE:${sizeConversion(total)}`)
+        this.progress(files.length)
+        dirs.sort((a, b) => a.length - b.length)
+        await this.uploadDirectory(dirs)
+        await this.uploadFiles(files, {
+          tick: (err, fileName) => {
+            if (err) return log.error(err);
+            this.emit("progress", fileName)
+          }
+        })
+      }
+    } catch (_) {
+      log.error(_);
+      this.emit("error", _)
     }
 
   }
@@ -74,8 +77,9 @@ export abstract class BaseClient extends EventEmitter {
     try {
       await this.uploadDirectory(dirs);
       await this.uploadFile(this.options.sourcePath, file);
-      log.success("deploy successed")
+      this.emit("complete")
     } catch (_) {
+      this.emit("error", _)
       log.error(_)
     }
   }
@@ -117,8 +121,7 @@ export abstract class BaseClient extends EventEmitter {
         file: path.basename(name)
       })
       if (bar.complete) {
-        log.success("deploy successed")
-        process.exit(0)
+        this.emit("complete")
       }
     })
   }
