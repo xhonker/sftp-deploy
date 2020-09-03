@@ -3,14 +3,15 @@
 ### Install
 
 ```shell
-npm i @/xhonker/deploy -D
-yarn add @/xhonker/deploy -D
+npm i @xhonker/deploy -D
+OR
+yarn add @xhonker/deploy -D
 ```
 
 ### Usage
 
 ```js
-const deploy = require('@/xhonker/deploy');
+const deploy = require('@xhonker/deploy');
 deploy
   .start({
     username: 'user',
