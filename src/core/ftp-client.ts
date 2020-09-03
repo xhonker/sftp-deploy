@@ -16,68 +16,46 @@ export class FtpClient extends BaseClient {
     }
     this.start()
   }
-  connect(opts: FtpOptions): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (os.platform() !== 'darwin') return reject("not support platform")
-      this.client.Hostname = opts.host;
-      this.client.Username = opts.user;
-      this.client.Password = opts.password;
-      this.client.Passive = this.passive;
-      this.client.Port = opts.port;
-      this.client.ConnectTimeout = 0;
+  async connect(opts: FtpOptions) {
+    if (os.platform() !== 'darwin') throw new Error("not support platform")
+    this.client.Hostname = opts.host;
+    this.client.Username = opts.username;
+    this.client.Password = opts.password;
+    this.client.Passive = this.passive;
+    this.client.Port = opts.port;
+    this.client.ConnectTimeout = 0;
+
+    try {
       const success = this.client.Connect();
-      if (!success) reject(this.client.LastErrorText);
-      resolve(true);
-    })
+      if (!success) throw new Error(this.client.LastErrorText);
+    } catch (_) {
+      throw new Error(`[FTP] connect ${_}`)
+    }
   }
-  uploadFile(localPath: string, remotePath: string): Promise<string> {
-    return new Promise(async (result, reject) => {
-      try {
-        await this.execute(() => this.client.PutFile(localPath, remotePath), this.fileChmod(remotePath))
-        result(remotePath)
-      } catch (_) {
-        reject(_)
-      }
-    })
+  async uploadFile(localPath: string, remotePath: string) {
+    await this.execute(() => this.client.PutFile(localPath, remotePath), this.fileChmod(remotePath)).catch(_ => { throw new Error(`[FTP] uploadFile ${_}`) })
   }
-  mkdir(path: string): Promise<string> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.execute(() => this.client.CreateRemoteDir(path), this.fileChmod(path))
-        resolve(path)
-      } catch (_) {
-        reject(_)
-      }
-    })
+  async mkdir(path: string) {
+    await this.execute(() => this.client.CreateRemoteDir(path), this.fileChmod(path)).catch(_ => { throw new Error(`[FTP] mkdir ${_}`) })
   }
-  execute(fn: Function, command: string) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let result = fn();
-        if (!result && typeof result === 'string' && !!~result.search("failed")) return reject(this.client.LastErrorText);
-        await this.sendCommand(command)
-        resolve();
-      } catch (_) {
-        reject(_)
-      }
-    })
+  async execute(fn: Function, command: string) {
+    let result = fn();
+    if (!result && typeof result === 'string' && !!~result.search("failed")) throw new Error(this.client.LastErrorText);
+    await this.sendCommand(command).catch(_ => { throw new Error(`[FTP] execute ${_}`) })
   }
   fileChmod(path: string) {
     return `SITE CHMOD 777 ${path}`;
   }
-  sendCommand(cmd: string) {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isChangeChmod) return resolve();
+  async sendCommand(cmd: string) {
+    if (!this.isChangeChmod) return;
+
+    try {
       const rep = this.client.SendCommand(cmd);
-      if (!rep && typeof this.client.LastErrorText === 'string' && !!~this.client.LastErrorText.search('command not understood')) {
-        this.isChangeChmod = false;
-        return resolve();
-      } else if (!rep) {
-        reject(this.client.LastErrorText)
-      } else {
-        resolve()
-      }
-    })
+      if (!rep && typeof this.client.LastErrorText === 'string' && !!~this.client.LastErrorText.search('command not understood')) return this.isChangeChmod = false;
+      if (!rep) throw new Error(this.client.LastErrorText)
+    } catch (_) {
+      throw new Error(`[FTP] sendCommand ${_}`)
+    }
   }
   destroy() {
     if (this.client) {

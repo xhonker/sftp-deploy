@@ -11,17 +11,15 @@ export interface EntryOptions {
 }
 
 export interface FtpOptions extends BaseOptions {
-  user: string;
   passive?: boolean;
 }
 interface BaseOptions {
   host: string;
   port: number;
+  username: string;
   password: string;
   remotePath: string;
   sourcePath: string;
 }
 
-export interface SFtpOptions extends BaseOptions {
-  username: string;
-}
+export interface SFtpOptions extends BaseOptions { }

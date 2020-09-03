@@ -12,31 +12,19 @@ export class SftpClient extends BaseClient {
     this.client = new SSH();
     this.start();
   }
-  async connect(opts: SFtpOptions): Promise<boolean> {
+  async connect(opts: SFtpOptions) {
     try {
       await this.client.connect(opts)
       this.sftp = await this.client.requestSFTP();
-      return true
     } catch (_) {
-      throw `[sftp] connect ${_}`
+      throw new Error(`[sftp] connect ${_}`);
     }
   }
-  async uploadFile(localPath: string, remotePath: string): Promise<string> {
-    try {
-      await this.client.putFile(localPath, remotePath, this.sftp)
-      return localPath
-    } catch (_) {
-      throw `[sftp] uploadFile, path=${remotePath} ${_}`
-    }
-
+  async uploadFile(localPath: string, remotePath: string) {
+    await this.client.putFile(localPath, remotePath, this.sftp).catch(_ => { throw new Error(`[sftp] uploadFile, path=${remotePath} ${_}`) })
   }
-  async mkdir(remotePath: string): Promise<string> {
-    try {
-      await this.client.mkdir(remotePath, 'sftp', this.sftp)
-      return remotePath
-    } catch (_) {
-      throw `[sftp] mkdir, path=${remotePath} ${_}`
-    }
+  async mkdir(remotePath: string) {
+    await this.client.mkdir(remotePath, 'sftp', this.sftp).catch(_ => { throw new Error(`[sftp] mkdir, path=${remotePath} ${_}`); })
   }
   destroy() {
     if (this.sftp) {

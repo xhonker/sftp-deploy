@@ -17,8 +17,8 @@ export const start = (options: EntryOptions) => {
       remotePath: os.tmpdir(),
       sourcePath: process.cwd()
     }, options)
-    let { protocol, username, ...opts } = options;
-    let client = protocol === 'ftp' ? new FtpClient({ ...opts, user: username }) : new SftpClient({ ...opts, username })
+    let { protocol, ...opts } = options;
+    let client = protocol === 'ftp' ? new FtpClient(opts) : new SftpClient(opts)
     client.on("error", reject)
     client.on("complete", resolve)
   })

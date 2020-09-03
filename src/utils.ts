@@ -24,19 +24,19 @@ export const sizeConversion = (size: number): string => {
 
   return result;
 }
-
+const cl = console.log;
 export const log = {
   error(text: string) {
-    return console.log(chalk.redBright(text))
+    return cl(chalk.redBright(text))
   },
   info(text: string) {
-    return console.log(chalk.blueBright(text))
+    return cl(chalk.blueBright(text))
   },
   success(text: string) {
-    return console.log(chalk.greenBright(text))
+    return cl(chalk.greenBright(text))
   },
   warning(text: string) {
-    return console.log(chalk.yellowBright(text))
+    return cl(chalk.yellowBright(text))
   }
 }
 
